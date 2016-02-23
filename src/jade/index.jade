@@ -1,0 +1,17 @@
+extends _layouts/base.jade
+
+// Define Page specific classes if neccessary.
+block vars
+	- var htmlClass = ''; 		// <html> class
+	- var bodyClass = '';		// <body> class
+	- var wrapClass = '';		// page content holder class
+
+block content
+	h1 Hello World!
+	
+
+
+
+// Import page specific Scripts
+block scripts
+	script(src='#{absoluteUrl}js/index.js')
