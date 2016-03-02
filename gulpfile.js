@@ -83,7 +83,7 @@ gulp.task('templates', function() {
 });
 
 // Rebuild Jade, Scripts & do page reload
-gulp.task('rebuild', ['templates', 'bundle', 'styles'], function () {
+gulp.task('rebuild', ['templates', 'bundle', 'minify-js', 'styles'], function () {
     browserSync.reload();
 });
 
@@ -111,6 +111,13 @@ var inputs = scripts.map( function(script) {
 var outputs = scripts.map( function(script) {
     return ''+FOLDER+'js/' + script;
 });
+//
+// Minify Js
+gulp.task ('minify-js', function () {
+     return gulp.src(FOLDER + 'js/*.js')
+        .pipe(gulpif(argv.production, uglify()) )
+        .pipe(gulp.dest( FOLDER + 'js'));
+});
 
 //
 // Lint js scripts
@@ -135,20 +142,7 @@ gulp.task('bundle', ['jshint'], function() {
         debug: false
 
     });
-    b.on('factor.pipeline', function (file, pipeline) {
-        console.log("fb - " ,  (file));
-        /*
-        return pipeline.get('wrap')
-            .pipe(source (file))
-            .pipe(gulpif(argv.production, uglify()))
-            .pipe(gulp.dest(function(filestream) {
-                    console.log(  (filestream.base));
-                    return  filestream.base;
-                }   
-            ));
-    */
-        
-    });
+    
     b.plugin('factor-bundle', { outputs: outputs });
 
     return b
@@ -158,23 +152,7 @@ gulp.task('bundle', ['jshint'], function() {
         .pipe(buffer())
 
         .pipe( gulpif(argv.production, sourcemaps.init({loadMaps: true})) )
-        .pipe(gulpif(argv.production, uglify({
-            mangle:true,
-            output: {
-                
-            },
-            compress: {
-                sequences: true,
-                dead_code: true,
-                conditionals: true,
-                booleans: true,
-                unused: true,
-                if_return: true,
-                join_vars: true,
-                drop_console: true
-            }
-            
-        })))
+        .pipe(gulpif( argv.production, uglify() ))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./'));
 });
