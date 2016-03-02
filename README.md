@@ -1,5 +1,3 @@
-# vertex-rings
-HTML Shaders Test
 
 ## Instructions
 Node & Npm required
